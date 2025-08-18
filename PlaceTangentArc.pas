@@ -19,18 +19,18 @@ begin
 
     If Board = Nil Then Exit;
 
-    If (Board.DisplayUnit = 1) Then
-    begin
-       Metric.Checked := False;
-       IsMetric := False;
-       ArcRadius.Text := '20';
-       UnitsLabel.Caption := 'mil';
-    end else begin
+//    If (Board.DisplayUnit = 1) Then
+//    begin
+//       Metric.Checked := False;
+//       IsMetric := False;
+//       ArcRadius.Text := '20';
+//       UnitsLabel.Caption := 'mil';
+//    end else begin
        Metric.Checked  := True;
        IsMetric := True;
        ArcRadius.Text := '.5';
        UnitsLabel.Caption := 'mm';
-    end;
+//    end;
 end;
 
 //-----------------------------------------------------------------------

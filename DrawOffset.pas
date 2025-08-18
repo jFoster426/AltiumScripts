@@ -1,6 +1,13 @@
+const
+    // Offset in mm
+    offsetMMs    = 0.1397;
+    offsetMils   = 5;
+    useMetric    = 0;
+
 var
-    Board     : IPCB_Board;
-    direction : integer;
+    Board        : IPCB_Board;
+    direction    : Integer;
+    os           : Integer;
 
 //-----------------------------------------------------------------------
 
@@ -10,7 +17,6 @@ var
     dx, dy         : Real;
     length         : Real;
     nx, ny         : Real;
-    offset         : Real;
     ox, oy         : Integer;
     track1         : IPCB_Track;
 begin
@@ -18,9 +24,6 @@ begin
     y1 := track.y1;
     x2 := track.x2;
     y2 := track.y2;
-
-    // Offset in mm
-    offset := 0.25;
 
     // Compute direction vector as real
     dx := x2 - x1;
@@ -31,23 +34,41 @@ begin
         Exit; // Avoid divide by zero
 
     // Normal vector scaled by offset (in coord units)
-    nx := (-dy / length) * MMsToCoord(offset);
-    ny := ( dx / length) * MMsToCoord(offset);
+    nx := (-dy / length) * os;
+    ny := ( dx / length) * os;
 
     // Convert to integer offset
     ox := Round(nx);
     oy := Round(ny);
 
     // Create the new offset tracks
-    track1 := PCBServer.PCBObjectFactory(eTrackObject, eNoDimension, eCreate_Default);
-    track1.x1 := track.x1 + (ox * direction);
-    track1.y1 := track.y1 + (oy * direction);
-    track1.x2 := track.x2 + (ox * direction);
-    track1.y2 := track.y2 + (oy * direction);
+    track1       := PCBServer.PCBObjectFactory(eTrackObject, eNoDimension, eCreate_Default);
+    track1.x1    := track.x1 + (ox * direction);
+    track1.y1    := track.y1 + (oy * direction);
+    track1.x2    := track.x2 + (ox * direction);
+    track1.y2    := track.y2 + (oy * direction);
     track1.Width := track.Width;
-    track1.Layer := track.Layer;
+    track1.Layer := Board.CurrentLayer;
 
     Board.AddPCBObject(track1);
+end;
+
+procedure DrawOffsetArc(arc : IPCB_Arc);
+var
+    arc1            : IPCB_Arc;
+    
+begin
+    arc1            := PCBServer.PCBObjectFactory(eArcObject, eNoDimension, eCreate_Default);
+    arc1.XCenter    := arc.XCenter;
+    arc1.YCenter    := arc.YCenter;
+    arc1.Radius     := arc.Radius + (direction * os);
+    arc1.LineWidth  := arc.LineWidth;
+    arc1.StartAngle := arc.StartAngle;
+    arc1.EndAngle   := arc.EndAngle;
+    arc1.Layer      := Board.CurrentLayer;
+    
+    Board.AddPCBObject(arc1);
+
 end;
 
 procedure DrawOffset;
@@ -60,6 +81,15 @@ begin
     If Board = Nil Then Exit;
 
     CountObjects := Board.SelectecObjectCount;
+    
+    if useMetric = 1 then
+    begin
+        os := MMsToCoord(offsetMMs);
+    end
+    else
+    begin
+        os := MilsToCoord(offsetMils);
+    end;
 
     for i := 0 to CountObjects-1 do begin
         Object1 := Board.SelectecObject(i);
@@ -69,7 +99,7 @@ begin
         end;
         if (Object1.ObjectId = eArcObject) then
         begin
-            // TODO
+            DrawOffsetArc(Object1);
         end;
     end;
 
