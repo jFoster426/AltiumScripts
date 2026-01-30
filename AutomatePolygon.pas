@@ -120,7 +120,7 @@ begin
         begin
             object1.BeginModify;
             object1.SetState_PolyHatchStyle(ePolySolid);
-            object1.SetState_ArcApproximation(MMsToCoord(0.001));
+            object1.SetState_ArcApproximation(MMsToCoord(0.005));
             object1.SetState_PourOver(true);
             object1.SetState_RemoveDead(true);
             object1.SetState_RemoveNarrowNecks(true);
@@ -134,7 +134,7 @@ begin
         if (object1.ObjectId = eRegionObject) then
         begin
             object1.BeginModify;
-            object1.SetState_ArcApproximation(MMsToCoord(0.001));
+            object1.SetState_ArcApproximation(MMsToCoord(0.005));
             changeLayer(object1);
             object1.EndModify;
             object1.GraphicallyInvalidate;

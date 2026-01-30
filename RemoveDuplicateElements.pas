@@ -1,17 +1,3 @@
-Procedure Main;
-Var
-    Board     : IPCB_Board;
-    Tracks     : Array [0..1000] Of IPCB_Track;
-    Arcs      : Array [0..1000] Of IPCB_Arc;
-
-    TracksToDelete : Array [0..1000] Of Integer;
-    ArcsToDelete : Array [0..1000] Of Integer;
-
-    TracksCount : Integer;
-    ArcsCount : Integer;
-
-    i, j : Integer;
-
 Function WithinToleranceTrack(t1 : IPCB_Track, t2 : IPCB_Track);
 Var
     tol : Integer;
@@ -67,6 +53,19 @@ Begin
     End;
 End;
 
+Procedure Main;
+Var
+    Board     : IPCB_Board;
+    Tracks     : Array [0..1000] Of IPCB_Track;
+    Arcs      : Array [0..1000] Of IPCB_Arc;
+
+    TracksToDelete : Array [0..1000] Of Integer;
+    ArcsToDelete : Array [0..1000] Of Integer;
+
+    TracksCount : Integer;
+    ArcsCount : Integer;
+
+    i, j : Integer;
 Begin
     Board := PCBServer.GetCurrentPCBBoard;
     If Board = Nil Then Exit;
@@ -144,4 +143,6 @@ Begin
 
     Board.ViewManager_FullUpdate;
     Client.SendMessage('PCB:Zoom', 'Action=Redraw', 255, Client.CurrentView);
+
+    ShowMessage('Deleted ' + IntToStr(TracksCount) + ' tracks and ' + IntToStr(ArcsCount) + ' arcs.');
 End;

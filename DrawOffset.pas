@@ -1,8 +1,8 @@
 const
     // Offset in mm
-    offsetMMs    = 0.1397;
+    offsetMMs    = 0.25;
     offsetMils   = 5;
-    useMetric    = 0;
+    useMetric    = 1;
 
 var
     Board        : IPCB_Board;
